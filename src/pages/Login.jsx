@@ -24,7 +24,22 @@ const Login = () => {
             toast.success('WELCOME BACK ✦');
             navigate('/');
         } catch (err) {
-            setError(err.response?.data?.error || 'LOGIN FAILED. TRY AGAIN.');
+            console.error('Login error:', err);
+            let errorMsg = 'LOGIN FAILED. TRY AGAIN.';
+            
+            if (err.response) {
+                // Server responded with error
+                errorMsg = err.response.data?.error || err.response.data?.message || errorMsg;
+            } else if (err.request) {
+                // Request made but no response
+                errorMsg = 'Cannot connect to server. Please check your connection.';
+            } else {
+                // Something else happened
+                errorMsg = err.message || errorMsg;
+            }
+            
+            setError(errorMsg);
+            toast.error(errorMsg);
         } finally { setLoading(false); }
     };
 
