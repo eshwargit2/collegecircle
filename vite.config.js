@@ -3,6 +3,9 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
+  // Use '/' for custom domain (collegecircle.app)
+  // If deploying to GitHub Pages without custom domain, use: base: '/repository-name/'
+  base: '/',
   plugins: [
     react(),
     tailwindcss(),
@@ -14,5 +17,9 @@ export default defineConfig({
         changeOrigin: true,
       },
     },
+  },
+  build: {
+    outDir: 'dist',
+    sourcemap: false,
   },
 })
