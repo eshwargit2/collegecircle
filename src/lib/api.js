@@ -1,6 +1,7 @@
 import axios from 'axios';
+import config from '../config/config.js';
 
-const apiUrl = import.meta.env.VITE_API_URL || '/api';
+const apiUrl = config.apiUrl;
 
 // Log API configuration (helpful for debugging)
 if (import.meta.env.DEV) {
