@@ -1,12 +1,14 @@
 import axios from 'axios';
-import config from '../config/config.js';
+import { config } from '../config/config.js';
 
 const apiUrl = config.apiUrl;
 
 // Log API configuration (helpful for debugging)
-if (import.meta.env.DEV) {
-    console.log('API Base URL:', apiUrl);
-}
+console.log('🔧 API Configuration:', {
+    baseURL: apiUrl,
+    mode: import.meta.env.MODE,
+    dev: import.meta.env.DEV
+});
 
 const api = axios.create({
     baseURL: apiUrl,

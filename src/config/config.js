@@ -12,13 +12,13 @@ export const config = {
     }
 };
 
-// Log configuration status
-if (import.meta.env.DEV) {
-    console.log('=== Configuration Loaded ===');
-    console.log('API URL:', config.apiUrl);
-    console.log('Supabase URL:', config.supabase.url || '⚠️ Not set');
-    console.log('Supabase Key:', config.supabase.anonKey ? '✓ Set' : '⚠️ Not set');
-}
+// Always log configuration status for debugging
+console.log('=== Configuration Loaded ===');
+console.log('Mode:', import.meta.env.MODE);
+console.log('API URL:', config.apiUrl);
+console.log('Supabase URL:', config.supabase.url || '⚠️ Not set');
+console.log('Supabase Key:', config.supabase.anonKey ? '✓ Set' : '⚠️ Not set');
+console.log('================================');
 
 // Validation and warnings
 if (!config.supabase.url || !config.supabase.anonKey) {
