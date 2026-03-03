@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <!-- Home/Feed Page - Main page of the application -->
+  <url>
+    <loc>https://collegecircle.app/</loc>
+    <lastmod>2026-03-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Login Page - User authentication -->
+  <url>
+    <loc>https://collegecircle.app/login</loc>
+    <lastmod>2026-03-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Register Page - New user sign up -->
+  <url>
+    <loc>https://collegecircle.app/register</loc>
+    <lastmod>2026-03-03</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Forgot Password Page - Password recovery -->
+  <url>
+    <loc>https://collegecircle.app/forgot-password</loc>
+    <lastmod>2026-03-03</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <!-- Reset Password Page - Password reset functionality -->
+  <url>
+    <loc>https://collegecircle.app/reset-password</loc>
+    <lastmod>2026-03-03</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <!-- Messages Page - User messaging feature -->
+  <url>
+    <loc>https://collegecircle.app/messages</loc>
+    <lastmod>2026-03-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+</urlset>
