@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { GraduationCap, Mail, Lock, User, Eye, EyeOff, FileText, Loader2, AlertCircle, CheckCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import useIsMobile from '../hooks/useIsMobile';
@@ -9,11 +9,11 @@ const DOMAIN = 'gmail.com';
 
 const Register = () => {
     const { register } = useAuth();
-    const navigate = useNavigate();
     const isMobile = useIsMobile();
     const [form, setForm] = useState({ email: '', username: '', password: '', bio: '' });
     const [showPass, setShowPass] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [redirecting, setRedirecting] = useState(false);
     const [error, setError] = useState('');
 
     const handleChange = (e) => { setForm(p => ({ ...p, [e.target.name]: e.target.value })); setError(''); };
@@ -30,13 +30,26 @@ const Register = () => {
         try {
             await register(form.email, form.username, form.password, form.bio);
             toast.success('ACCOUNT CREATED ✦');
-            navigate('/');
+            setRedirecting(true);
+            // PublicRoute will handle redirect automatically
         } catch (err) {
             setError(err.response?.data?.error?.toUpperCase() || 'REGISTRATION FAILED');
         } finally { setLoading(false); }
     };
 
     const pad = isMobile ? '20px' : '32px 36px';
+
+    // Show redirecting screen after successful registration
+    if (redirecting) {
+        return (
+            <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--white)' }}>
+                <div style={{ textAlign: 'center' }}>
+                    <Loader2 size={40} className="animate-spin" style={{ margin: '0 auto 16px', color: 'var(--yellow)' }} />
+                    <p style={{ fontSize: '14px', fontWeight: '700', letterSpacing: '2px', textTransform: 'uppercase' }}>REDIRECTING...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div style={{ minHeight: '100vh', display: 'flex', background: 'var(--white)', overflow: 'hidden' }}>
