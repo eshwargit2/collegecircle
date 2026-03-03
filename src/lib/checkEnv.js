@@ -11,12 +11,15 @@ export const checkEnvConfig = () => {
         PROD: import.meta.env.PROD,
     };
 
-    console.log('=== Environment Configuration ===');
-    console.log('Mode:', config.MODE);
-    console.log('API URL:', config.API_URL || '⚠️ Not set (will use /api)');
-    console.log('Supabase URL:', config.SUPABASE_URL || '⚠️ Not set');
-    console.log('Supabase Key:', config.SUPABASE_KEY);
-    console.log('================================');
+    // Only log in development
+    if (import.meta.env.DEV) {
+        console.log('=== Environment Configuration ===');
+        console.log('Mode:', config.MODE);
+        console.log('API URL:', config.API_URL || '⚠️ Not set (will use /api)');
+        console.log('Supabase URL:', config.SUPABASE_URL || '⚠️ Not set');
+        console.log('Supabase Key:', config.SUPABASE_KEY);
+        console.log('================================');
+    }
 
     // Warn if critical env vars are missing in production
     if (config.PROD) {
