@@ -32,3 +32,6 @@ src/config/config.local.js
 *.njsproj
 *.sln
 *.sw?
+
+.env.development
+.env.production
