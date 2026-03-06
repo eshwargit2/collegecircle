@@ -26,6 +26,17 @@ api.interceptors.request.use((config) => {
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
+    
+    // Debug logging
+    if (import.meta.env.DEV) {
+        console.log('🔥 Making request:', {
+            method: config.method,
+            baseURL: config.baseURL,
+            url: config.url,
+            fullURL: config.baseURL + config.url
+        });
+    }
+    
     return config;
 });
 
@@ -35,8 +46,17 @@ api.interceptors.response.use(
     (error) => {
         // Log errors in development
         if (import.meta.env.DEV) {
-            console.error('API Error:', error.message);
-            console.error('Response:', error.response?.data);
+            console.error('❌ API Error:', error.message);
+            console.error('Error Code:', error.code);
+            console.error('Request:', error.config?.url);
+            console.error('Response Status:', error.response?.status);
+            console.error('Response Data:', error.response?.data);
+            
+            // Network error details
+            if (!error.response) {
+                console.error('⚠️ Network Error - No response received');
+                console.error('Attempted URL:', error.config?.baseURL + error.config?.url);
+            }
         }
         
         if (error.response?.status === 401) {

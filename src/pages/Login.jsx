@@ -11,7 +11,6 @@ const Login = () => {
     const [form, setForm] = useState({ email: '', password: '' });
     const [showPass, setShowPass] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [redirecting, setRedirecting] = useState(false);
     const [error, setError] = useState('');
 
     const handleChange = (e) => { setForm(p => ({ ...p, [e.target.name]: e.target.value })); setError(''); };
@@ -22,8 +21,7 @@ const Login = () => {
         try {
             await login(form.email, form.password);
             toast.success('WELCOME BACK ✦');
-            setRedirecting(true);
-            // PublicRoute will handle redirect automatically
+            // PublicRoute will automatically redirect to "/" when user is set
         } catch (err) {
             console.error('Login error:', err);
             let errorMsg = 'LOGIN FAILED. TRY AGAIN.';
@@ -45,18 +43,6 @@ const Login = () => {
     };
 
     const pad = isMobile ? '20px' : '36px';
-
-    // Show redirecting screen after successful login
-    if (redirecting) {
-        return (
-            <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--white)' }}>
-                <div style={{ textAlign: 'center' }}>
-                    <Loader2 size={40} className="animate-spin" style={{ margin: '0 auto 16px', color: 'var(--yellow)' }} />
-                    <p style={{ fontSize: '14px', fontWeight: '700', letterSpacing: '2px', textTransform: 'uppercase' }}>REDIRECTING...</p>
-                </div>
-            </div>
-        );
-    }
 
     return (
         <div style={{ minHeight: '100vh', display: 'flex', background: 'var(--white)', overflow: 'hidden' }}>

@@ -13,8 +13,14 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://clg-server.vercel.app',
+        target: 'https://campus-server-three.vercel.app',
         changeOrigin: true,
+        secure: false,
+        configure: (proxy, options) => {
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            console.log('🔀 Proxying:', req.method, req.url);
+          });
+        },
       },
     },
   },
