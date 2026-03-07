@@ -1,12 +1,16 @@
-# Netlify configuration for API proxy
+# Netlify configuration
+[build]
+  publish = "docs"
+  command = "npm run build"
+
 [[redirects]]
   from = "/api/*"
   to = "https://campus-server-three.vercel.app/api/:splat"
   status = 200
   force = true
-  headers = {X-From = "github"}
 
-[[headers]]
-  for = "/*"
-  [headers.values]
-    Access-Control-Allow-Origin = "*"
+# SPA fallback - redirect all routes to index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
