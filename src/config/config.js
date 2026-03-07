@@ -15,6 +15,7 @@ export const config = {
 // Always log configuration status for debugging
 
 
+
 // Validation and warnings
 if (!config.supabase.url || !config.supabase.anonKey) {
     console.error('⚠️ Missing Supabase configuration! Check your .env file or GitHub Secrets.');
