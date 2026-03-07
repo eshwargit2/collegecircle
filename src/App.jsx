@@ -12,6 +12,9 @@ import Profile from './pages/Profile';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import Messages from './pages/Messages';
+import AdminLogin from './pages/AdminLogin';
+import AdminDashboard from './pages/AdminDashboard';
+import VerifyEmail from './pages/VerifyEmail';
 
 // Route guard for authenticated routes
 const ProtectedRoute = ({ children }) => {
@@ -42,31 +45,8 @@ const ProtectedRoute = ({ children }) => {
 // Public only route (redirect if logged in)
 const PublicRoute = ({ children }) => {
   const { user, loading } = useAuth();
-  
-  if (loading) {
-    return (
-      <div
-        style={{
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: 'var(--bg-base)',
-        }}
-      >
-        <div style={{ textAlign: 'center' }}>
-          <div className="spinner" style={{ margin: '0 auto 16px' }} />
-          <p style={{ color: 'var(--text-muted)', fontSize: '14px' }}>Loading...</p>
-        </div>
-      </div>
-    );
-  }
-  
-  if (user) {
-    return <Navigate to="/" replace />;
-  }
-  
-  return children;
+  if (loading) return null;
+  return user ? <Navigate to="/" replace /> : children;
 };
 
 const AppContent = () => {
@@ -116,6 +96,7 @@ const AppContent = () => {
           }
         />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
         <Route
           path="/"
           element={
@@ -187,11 +168,20 @@ const AppContent = () => {
 
 const App = () => (
   <BrowserRouter>
-    <AuthProvider>
-      <OnlineProvider>
-        <AppContent />
-      </OnlineProvider>
-    </AuthProvider>
+    <Routes>
+      {/* ── Admin routes (completely isolated, no AuthProvider) ── */}
+      <Route path="/admin-login" element={<AdminLogin />} />
+      <Route path="/admin/dashboard" element={<AdminDashboard />} />
+
+      {/* ── Regular app routes ── */}
+      <Route path="/*" element={
+        <AuthProvider>
+          <OnlineProvider>
+            <AppContent />
+          </OnlineProvider>
+        </AuthProvider>
+      } />
+    </Routes>
   </BrowserRouter>
 );
 
