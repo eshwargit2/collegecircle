@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const API_BASE = import.meta.env.VITE_API_URL ;
+const API_BASE = import.meta.env.VITE_API_URL || 'https://corsproxy.io/?https://campus-server-three.vercel.app/api';
 
 export default function AdminLogin() {
   const navigate = useNavigate();

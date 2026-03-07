@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE = import.meta.env.VITE_API_URL || 'https://corsproxy.io/?https://campus-server-three.vercel.app/api';
 
 // ─── Window Width Hook ────────────────────────────────────────────────────
 function useWindowWidth() {
