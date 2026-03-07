@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const _raw = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-const API = _raw.endsWith('/api') ? _raw.slice(0, -4) : _raw;
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -28,7 +27,7 @@ export default function AdminLogin() {
     setError('');
     setLoading(true);
     try {
-      const res = await fetch(`${API}/api/admin/login`, {
+      const res = await fetch(`${API_BASE}/admin/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),

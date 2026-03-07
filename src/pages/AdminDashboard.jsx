@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const _raw = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-const API = _raw.endsWith('/api') ? _raw.slice(0, -4) : _raw;
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 // ─── Window Width Hook ────────────────────────────────────────────────────
 function useWindowWidth() {
@@ -19,7 +18,9 @@ function useWindowWidth() {
 function getToken() { return sessionStorage.getItem('adminToken'); }
 
 async function apiFetch(path, opts = {}) {
-  const res = await fetch(`${API}${path}`, {
+  // Remove /api prefix from path since API_BASE already includes it
+  const cleanPath = path.startsWith('/api') ? path.substring(4) : path;
+  const res = await fetch(`${API_BASE}${cleanPath}`, {
     ...opts,
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}`, ...opts.headers },
   });
