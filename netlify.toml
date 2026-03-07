@@ -4,7 +4,7 @@
   to = "https://campus-server-three.vercel.app/api/:splat"
   status = 200
   force = true
-  headers = {X-From = "Netlify"}
+  headers = {X-From = "github"}
 
 [[headers]]
   for = "/*"
