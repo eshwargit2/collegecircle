@@ -3,6 +3,10 @@ import axios from 'axios';
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL || '/api',
     timeout: 30000,
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+    }
 });
 
 // Attach JWT token to every request
@@ -14,10 +18,18 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-// Handle 401 globally
+// Handle 401 and CORS errors globally
 api.interceptors.response.use(
     (response) => response,
     (error) => {
+        // Handle CORS/Network errors
+        if (!error.response) {
+            console.error('🚫 Network Error:', error.message);
+            console.error('Origin:', window.location.origin);
+            console.error('API URL:', import.meta.env.VITE_API_URL);
+            error.message = 'Unable to connect to server. Server may not allow requests from this domain.';
+        }
+        
         if (error.response?.status === 401) {
             localStorage.removeItem('cc_token');
             localStorage.removeItem('cc_user');

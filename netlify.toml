@@ -1,0 +1,12 @@
+# Netlify configuration for API proxy
+[[redirects]]
+  from = "/api/*"
+  to = "https://campus-server-three.vercel.app/api/:splat"
+  status = 200
+  force = true
+  headers = {X-From = "Netlify"}
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
