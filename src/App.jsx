@@ -174,7 +174,7 @@ const App = () => (
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
 
       {/* ── Regular app routes ── */}
-      <Route path="/*" element={
+      <Route path="*" element={
         <AuthProvider>
           <OnlineProvider>
             <AppContent />
