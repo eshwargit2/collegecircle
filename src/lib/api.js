@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || 'https://corsproxy.io/?url=https://campus-server-three.vercel.app/api',
+    baseURL: import.meta.env.VITE_API_URL || 'https://campus-server-three.vercel.app/api',
     timeout: 30000,
     headers: {
         'Content-Type': 'application/json',
