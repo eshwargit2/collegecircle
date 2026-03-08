@@ -5,7 +5,7 @@
 // 1. Environment variables (set via .env locally or GitHub Secrets in production)
 // 2. Default values (fallback)
 export const config = {
-    apiUrl: import.meta.env.VITE_API_URL || '/api',
+    apiUrl: import.meta.env.VITE_API_URL || 'https://campus-server-three.vercel.app/api',
     supabase: {
         url: import.meta.env.VITE_SUPABASE_URL || '',
         anonKey: import.meta.env.VITE_SUPABASE_ANON_KEY || ''
