@@ -33,6 +33,7 @@ const StoryViewer = ({ storyGroups, initialGroupIndex = 0, onClose }) => {
     const [liked, setLiked] = useState(false);
     const [likesCount, setLikesCount] = useState(0);
     const [likeAnimating, setLikeAnimating] = useState(false);
+    const [storyImageFit, setStoryImageFit] = useState('cover');
 
     const timerRef = useRef(null);
     const startTimeRef = useRef(null);
@@ -60,12 +61,21 @@ const StoryViewer = ({ storyGroups, initialGroupIndex = 0, onClose }) => {
         setReplyText('');
         setSentReaction(null);
         setShowReactions(false);
+        setStoryImageFit('cover');
         // Sync like state from story data
         if (currentStory) {
             setLiked(currentStory.liked_by_me || false);
             setLikesCount(currentStory.likes_count || 0);
         }
     }, [currentStory?.id]);
+
+    const handleStoryImageLoad = (e) => {
+        const { naturalWidth, naturalHeight } = e.currentTarget;
+        if (!naturalWidth || !naturalHeight) return;
+
+        const isLandscape = naturalWidth > naturalHeight;
+        setStoryImageFit(isLandscape ? 'contain' : 'cover');
+    };
 
     // Lock scroll
     useEffect(() => {
@@ -341,10 +351,21 @@ const StoryViewer = ({ storyGroups, initialGroupIndex = 0, onClose }) => {
                 </div>
 
                 {/* Story image */}
-                <img src={currentStory.image_url} alt={currentStory.caption || 'Story'}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    draggable={false}
-                />
+                <div style={{ position: 'absolute', inset: 0, background: '#000' }}>
+                    <img
+                        src={currentStory.image_url}
+                        alt={currentStory.caption || 'Story'}
+                        onLoad={handleStoryImageLoad}
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: storyImageFit,
+                            objectPosition: 'center',
+                            display: 'block',
+                        }}
+                        draggable={false}
+                    />
+                </div>
 
                 {/* Tap zones (only when not typing) */}
                 {!isInputActive && (
