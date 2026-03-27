@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'https://corsproxy.io/?https://campus-server-three.vercel.app/api';
+const _raw = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API = _raw.endsWith('/api') ? _raw.slice(0, -4) : _raw;
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ export default function AdminLogin() {
     setError('');
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/admin/login`, {
+      const res = await fetch(`${API}/api/admin/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
