@@ -341,9 +341,7 @@ const Profile = () => {
                             <h1 style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: '26px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '-0.5px', marginBottom: '4px' }}>
                                 {profileData.username}
                             </h1>
-                            <p style={{ fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(10,10,10,0.4)', marginBottom: '10px' }}>
-                                {profileData.email}
-                            </p>
+
 
                             {profileData.bio && (
                                 <p style={{ fontSize: '13px', lineHeight: '1.7', maxWidth: '400px', borderLeft: '4px solid var(--yellow)', paddingLeft: '12px', marginBottom: '14px' }}>
