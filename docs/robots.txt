@@ -1,6 +1,0 @@
-# Allow all search engines to crawl the site
-User-agent: *
-Allow: /
-
-# Sitemap location for search engines
-Sitemap: https://www.collegecircle.app/sitemap.xml
