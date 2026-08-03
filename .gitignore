@@ -19,9 +19,6 @@ dist-ssr
 .env.test.local
 .env.production.local
 
-# Local config (contains credentials)
-src/config/config.local.js
-
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -32,6 +29,3 @@ src/config/config.local.js
 *.njsproj
 *.sln
 *.sw?
-
-.env.development
-.env.production
