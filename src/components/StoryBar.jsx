@@ -1,0 +1,401 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { Plus, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { OnlineDot } from '../context/OnlineContext';
+import api from '../lib/api';
+import toast from 'react-hot-toast';
+
+const StoryBar = ({ onOpenViewer, onRefreshKey }) => {
+    const { user } = useAuth();
+    const [storyGroups, setStoryGroups] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [showUpload, setShowUpload] = useState(false);
+    const scrollRef = useRef(null);
+
+    useEffect(() => { fetchStories(); }, [onRefreshKey]);
+
+    const fetchStories = async () => {
+        try {
+            const { data } = await api.get('/stories');
+            setStoryGroups(data.storyGroups || []);
+        } catch { /* silent */ }
+        finally { setLoading(false); }
+    };
+
+    const scroll = (dir) => {
+        if (scrollRef.current) {
+            scrollRef.current.scrollBy({ left: dir * 200, behavior: 'smooth' });
+        }
+    };
+
+    const hasMyStory = user && storyGroups.some(g => g.user.id === user.id);
+
+    return (
+        <>
+            <div style={{
+                background: 'var(--white)', border: 'var(--border-thick)',
+                boxShadow: 'var(--shadow-lg)', marginBottom: '32px',
+                position: 'relative',
+                borderRadius: '24px',
+                overflow: 'hidden',
+            }}>
+                {/* Header */}
+                <div style={{
+                    background: 'var(--primary-tint)', padding: '10px 18px',
+                    borderBottom: '1px solid var(--border-color)',
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                }}>
+                    <span style={{
+                        fontFamily: "'Outfit', sans-serif", fontSize: '11px',
+                        fontWeight: '700', letterSpacing: '1.5px', color: 'var(--yellow)',
+                        textTransform: 'uppercase',
+                    }}>■ STORIES</span>
+                    <span style={{
+                        fontSize: '9px', letterSpacing: '1px', color: 'var(--text-muted)',
+                        textTransform: 'uppercase', fontFamily: "'Outfit', sans-serif",
+                        fontWeight: '600',
+                    }}>24H • TAP TO VIEW</span>
+                </div>
+
+                {/* Scrollable row */}
+                <div style={{ position: 'relative' }}>
+                    {/* Left arrow */}
+                    <button onClick={() => scroll(-1)} style={{
+                        position: 'absolute', left: '8px', top: '50%', transform: 'translateY(-50%)',
+                        zIndex: 2, background: 'var(--white)', border: 'var(--border)',
+                        borderRadius: '50%', color: 'var(--yellow)', cursor: 'pointer', padding: '8px',
+                        display: 'flex', boxShadow: 'var(--clay-btn-shadow)', opacity: 0.9,
+                        transition: 'all 0.2s',
+                    }}
+                        onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)'; }}
+                        onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(-50%) scale(1)'; }}
+                    >
+                        <ChevronLeft size={14} />
+                    </button>
+
+                    <div ref={scrollRef} style={{
+                        display: 'flex', gap: '0',
+                        overflowX: 'auto', scrollBehavior: 'smooth',
+                        padding: '16px 14px',
+                        scrollbarWidth: 'none',
+                    }}>
+                        {/* Add story button */}
+                        {user && (
+                            <button onClick={() => setShowUpload(true)} style={{
+                                display: 'flex', flexDirection: 'column',
+                                alignItems: 'center', gap: '6px',
+                                padding: '0 14px', cursor: 'pointer',
+                                background: 'none', border: 'none', flexShrink: 0,
+                                minWidth: '76px',
+                            }}>
+                                <div style={{
+                                    width: '62px', height: '62px',
+                                    border: '2px dashed var(--yellow)',
+                                    borderRadius: '50%',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    background: 'var(--primary-tint)',
+                                    transition: 'all 0.2s',
+                                    position: 'relative',
+                                }}
+                                    onMouseEnter={e => { e.currentTarget.style.background = 'rgba(59,130,246,0.15)'; }}
+                                    onMouseLeave={e => { e.currentTarget.style.background = 'var(--primary-tint)'; }}
+                                >
+                                    <Plus size={22} color="var(--yellow)" />
+                                </div>
+                                <span style={{
+                                    fontSize: '9px', fontWeight: '700',
+                                    letterSpacing: '0.5px', textTransform: 'uppercase',
+                                    color: 'var(--black)',
+                                    fontFamily: "'Outfit', sans-serif",
+                                }}>
+                                    {hasMyStory ? 'ADD' : 'YOUR\nSTORY'}
+                                </span>
+                            </button>
+                        )}
+
+                        {/* Story circles */}
+                        {loading ? (
+                            [1, 2, 3, 4].map(i => (
+                                <div key={i} style={{
+                                    display: 'flex', flexDirection: 'column',
+                                    alignItems: 'center', gap: '6px',
+                                    padding: '0 14px', flexShrink: 0,
+                                }}>
+                                    <div className="skeleton" style={{
+                                        width: '62px', height: '62px', borderRadius: '50%',
+                                        border: '1px solid var(--border-color)',
+                                    }} />
+                                    <div className="skeleton" style={{ width: '42px', height: '8px' }} />
+                                </div>
+                            ))
+                        ) : (
+                            storyGroups.map(group => (
+                                <button key={group.user.id}
+                                    onClick={() => onOpenViewer(storyGroups, storyGroups.indexOf(group))}
+                                    style={{
+                                        display: 'flex', flexDirection: 'column',
+                                        alignItems: 'center', gap: '6px',
+                                        padding: '0 14px', cursor: 'pointer',
+                                        background: 'none', border: 'none', flexShrink: 0,
+                                        minWidth: '76px',
+                                    }}
+                                >
+                                    <div style={{
+                                        width: '62px', height: '62px',
+                                        borderRadius: '50%',
+                                        border: group.hasUnviewed
+                                            ? '3px solid var(--yellow)'
+                                            : '1px solid var(--border-color)',
+                                        boxShadow: group.hasUnviewed
+                                            ? '0 0 12px rgba(59, 130, 246, 0.4), var(--clay-btn-shadow)'
+                                            : 'var(--clay-btn-shadow)',
+                                        overflow: 'hidden', position: 'relative',
+                                        transition: 'all 0.2s',
+                                    }}>
+                                        {group.user.profile_image ? (
+                                            <img src={group.user.profile_image} alt={group.user.username}
+                                                style={{
+                                                    width: '100%', height: '100%', objectFit: 'cover',
+                                                    filter: group.hasUnviewed ? 'none' : 'opacity(0.8) grayscale(30%)',
+                                                    transition: 'filter 0.2s',
+                                                }} />
+                                        ) : (
+                                            <div style={{
+                                                width: '100%', height: '100%',
+                                                background: group.hasUnviewed ? 'var(--yellow)' : 'var(--primary-tint)',
+                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                fontFamily: "'Outfit', sans-serif",
+                                                fontWeight: '700', fontSize: '22px',
+                                                color: group.hasUnviewed ? '#ffffff' : 'var(--yellow)',
+                                            }}>
+                                                {group.user.username?.charAt(0).toUpperCase()}
+                                            </div>
+                                        )}
+                                        {/* Story count badge */}
+                                        {group.stories.length > 1 && (
+                                            <div style={{
+                                                position: 'absolute', bottom: '2px', right: '2px',
+                                                background: 'var(--red)', color: '#ffffff',
+                                                fontSize: '8px', fontWeight: '700',
+                                                padding: '1px 4px', lineHeight: '1.2',
+                                                borderRadius: '6px',
+                                            }}>
+                                                {group.stories.length}
+                                            </div>
+                                        )}
+                                        {/* Online dot */}
+                                        <OnlineDot userId={group.user.id} size={9} />
+                                    </div>
+                                    <span style={{
+                                        fontSize: '9px', fontWeight: '700',
+                                        letterSpacing: '0.5px', textTransform: 'uppercase',
+                                        color: group.hasUnviewed ? 'var(--black)' : 'var(--text-muted)',
+                                        fontFamily: "'Outfit', sans-serif",
+                                        overflow: 'hidden', textOverflow: 'ellipsis',
+                                        whiteSpace: 'nowrap', maxWidth: '68px',
+                                    }}>
+                                        {group.user.id === user?.id ? 'YOU' : group.user.username}
+                                    </span>
+                                </button>
+                            ))
+                        )}
+                    </div>
+
+                    {/* Right arrow */}
+                    <button onClick={() => scroll(1)} style={{
+                        position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)',
+                        zIndex: 2, background: 'var(--white)', border: 'var(--border)',
+                        borderRadius: '50%', color: 'var(--yellow)', cursor: 'pointer', padding: '8px',
+                        display: 'flex', boxShadow: 'var(--clay-btn-shadow)', opacity: 0.9,
+                        transition: 'all 0.2s',
+                    }}
+                        onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)'; }}
+                        onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(-50%) scale(1)'; }}
+                    >
+                        <ChevronRight size={14} />
+                    </button>
+                </div>
+            </div>
+
+            {/* Upload Modal */}
+            {showUpload && (
+                <StoryUploadModal
+                    onClose={() => setShowUpload(false)}
+                    onUploaded={() => { setShowUpload(false); fetchStories(); }}
+                />
+            )}
+        </>
+    );
+};
+
+// ─── Story Upload Modal ───────────────────────────────────────────────
+const StoryUploadModal = ({ onClose, onUploaded }) => {
+    const [file, setFile] = useState(null);
+    const [preview, setPreview] = useState(null);
+    const [caption, setCaption] = useState('');
+    const [uploading, setUploading] = useState(false);
+    const fileRef = useRef(null);
+
+    const handleFile = (e) => {
+        const f = e.target.files[0]; if (!f) return;
+        setFile(f); setPreview(URL.createObjectURL(f));
+    };
+
+    const handleUpload = async () => {
+        if (!file) return;
+        setUploading(true);
+        try {
+            const isVideo = file.type.startsWith('video/');
+            let videoUrl = null;
+
+            if (isVideo) {
+                const { data: signData } = await api.get('/stories/cloudinary-signature');
+                const { signature, timestamp, apiKey, cloudName } = signData;
+
+                const cloudFormData = new FormData();
+                cloudFormData.append('file', file);
+                cloudFormData.append('api_key', apiKey);
+                cloudFormData.append('timestamp', timestamp);
+                cloudFormData.append('signature', signature);
+                cloudFormData.append('folder', 'stories');
+
+                const cloudRes = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/video/upload`, {
+                    method: 'POST', body: cloudFormData
+                });
+                if (!cloudRes.ok) throw new Error('Cloudinary upload failed');
+                
+                const cloudJson = await cloudRes.json();
+                videoUrl = cloudJson.secure_url;
+            }
+
+            const formData = new FormData();
+            if (videoUrl) {
+                formData.append('videoUrl', videoUrl);
+            } else {
+                formData.append('image', file);
+            }
+            formData.append('caption', caption);
+            
+            await api.post('/stories', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+            toast.success('STORY POSTED! ✦');
+            onUploaded();
+        } catch (err) {
+            toast.error(err.response?.data?.error?.toUpperCase() || 'UPLOAD FAILED');
+        }
+        finally { setUploading(false); }
+    };
+
+    return (
+        <div className="animate-fade-in" style={{
+            position: 'fixed', inset: 0, zIndex: 200,
+            background: 'rgba(10,10,10,0.95)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: '16px',
+        }} onClick={e => e.target === e.currentTarget && !uploading && onClose()}>
+            <div className="animate-scale-in" style={{
+                background: 'var(--white)', maxWidth: '420px', width: '100%',
+                border: 'var(--border-thick)', boxShadow: '12px 12px 0 var(--yellow)',
+                overflow: 'hidden',
+            }}>
+                {/* Header */}
+                <div style={{
+                    background: 'var(--black)', padding: '14px 20px',
+                    borderBottom: '5px solid var(--yellow)',
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                }}>
+                    <span style={{
+                        fontFamily: "'Space Mono', monospace", fontSize: '11px',
+                        fontWeight: '700', letterSpacing: '3px', color: 'var(--yellow)',
+                        textTransform: 'uppercase',
+                    }}>
+                        ■ ADD STORY
+                    </span>
+                    <button onClick={onClose} disabled={uploading} style={{
+                        background: 'none', border: '2px solid rgba(245,240,232,0.3)',
+                        color: 'var(--white)', cursor: 'pointer',
+                        width: '28px', height: '28px',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}>✕</button>
+                </div>
+
+                {/* Content */}
+                <div style={{ padding: '20px' }}>
+                    {preview ? (
+                        <div style={{
+                            position: 'relative', marginBottom: '16px',
+                            border: 'var(--border)', overflow: 'hidden',
+                            boxShadow: '4px 4px 0 var(--black)',
+                        }}>
+                            {file?.type.startsWith('video/') ? (
+                                <video src={preview} controls style={{ width: '100%', maxHeight: '350px', objectFit: 'cover', display: 'block' }} />
+                            ) : (
+                                <img src={preview} alt="Preview" style={{
+                                    width: '100%', maxHeight: '350px', objectFit: 'cover', display: 'block',
+                                }} />
+                            )}
+                            <button onClick={() => { setFile(null); setPreview(null); }} style={{
+                                position: 'absolute', top: '8px', right: '8px',
+                                background: 'var(--black)', color: 'var(--yellow)',
+                                border: '2px solid var(--yellow)', cursor: 'pointer',
+                                width: '28px', height: '28px', display: 'flex',
+                                alignItems: 'center', justifyContent: 'center',
+                                fontSize: '14px', fontWeight: '700',
+                            }}>✕</button>
+                        </div>
+                    ) : (
+                        <button onClick={() => fileRef.current?.click()} style={{
+                            width: '100%', padding: '50px 20px',
+                            border: '3px dashed var(--black)',
+                            background: 'rgba(255,224,0,0.06)',
+                            cursor: 'pointer', display: 'flex', flexDirection: 'column',
+                            alignItems: 'center', gap: '12px',
+                            transition: 'all 0.2s', marginBottom: '16px',
+                        }}
+                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,224,0,0.15)'}
+                            onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,224,0,0.06)'}
+                        >
+                            <Plus size={32} />
+                            <span style={{
+                                fontSize: '11px', fontWeight: '700',
+                                letterSpacing: '2px', textTransform: 'uppercase',
+                                fontFamily: "'Space Mono', monospace",
+                            }}>
+                                CHOOSE MEDIA
+                            </span>
+                        </button>
+                    )}
+
+                    <input ref={fileRef} type="file" accept="image/*,video/*" onChange={handleFile}
+                        style={{ display: 'none' }} />
+
+                    <input value={caption} onChange={e => setCaption(e.target.value)}
+                        placeholder="ADD A CAPTION (OPTIONAL)"
+                        maxLength={100}
+                        className="input-field"
+                        style={{ marginBottom: '16px', width: '100%', boxSizing: 'border-box' }} />
+
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                        <button onClick={onClose} className="btn-ghost"
+                            style={{ flex: 1, fontSize: '11px' }} disabled={uploading}>
+                            CANCEL
+                        </button>
+                        <button onClick={handleUpload} className="btn-brand"
+                            style={{ flex: 1, fontSize: '11px' }}
+                            disabled={!file || uploading}>
+                            {uploading ? 'POSTING...' : 'POST STORY →'}
+                        </button>
+                    </div>
+
+                    <p style={{
+                        fontSize: '9px', letterSpacing: '2px', textTransform: 'uppercase',
+                        color: 'rgba(10,10,10,0.3)', textAlign: 'center', marginTop: '12px',
+                    }}>
+                        Stories disappear after 24 hours
+                    </p>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default StoryBar;
