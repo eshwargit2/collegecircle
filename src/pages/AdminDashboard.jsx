@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-
-
 const _raw = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 const API = _raw.endsWith('/api') ? _raw.slice(0, -4) : _raw;
 

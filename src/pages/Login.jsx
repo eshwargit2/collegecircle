@@ -5,7 +5,6 @@ import { useAuth } from '../context/AuthContext';
 import useIsMobile from '../hooks/useIsMobile';
 import toast from 'react-hot-toast';
 
-
 const Login = () => {
     const { login } = useAuth();
     const navigate = useNavigate();
